@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guided Insights — Daily Qur'anic Reflection</title>
+<meta name="description" content="A daily Qur'anic verse, its translation, and a space for personal reflection.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1B1812">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-apple-touch.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Guided Insights">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="page-frame">
+
+  <header class="site-header">
+    <div class="brand">
+      <h1>Guided Insights</h1>
+      <p class="brand-tagline">A daily pause with the Qur'an</p>
+    </div>
+    <div class="header-meta">
+      <button type="button" id="install-btn" class="install-button" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5"/><path d="M4 17v2.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V17"/></svg>
+        <span>Install app</span>
+      </button>
+      <div class="theme-toggle" id="theme-toggle" role="group" aria-label="Theme">
+        <button type="button" id="theme-light" aria-pressed="true">Light</button>
+        <button type="button" id="theme-dark" aria-pressed="false">Dark</button>
+      </div>
+      <span id="gregorian-date" class="date-pill"></span>
+      <span id="hijri-date" class="date-pill date-pill--muted"></span>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <nav class="tab-bar" role="tablist" aria-label="Sections">
+    <button class="tab-button" id="tab-verse" role="tab" aria-selected="true" aria-controls="panel-verse" type="button">Verse</button>
+    <button class="tab-button" id="tab-reflection" role="tab" aria-selected="false" aria-controls="panel-reflection" type="button">Reflection</button>
+    <button class="tab-button" id="tab-explore" role="tab" aria-selected="false" aria-controls="panel-explore" type="button">Explore</button>
+  </nav>
+
+  <p id="ios-install-hint" class="ios-install-hint" hidden>
+    Add this to your Home Screen: tap <strong>Share</strong>, then
+    <strong>Add to Home Screen</strong>.
+    <button type="button" id="ios-install-dismiss" aria-label="Dismiss">✕</button>
+  </p>
+
+  <main>
+
+    <!-- Daily Verse -->
+    <section class="tab-panel daily-verse-section" id="panel-verse" role="tabpanel" aria-labelledby="tab-verse" tabindex="0">
+      <div class="section-rule" aria-hidden="true"></div>
+      <div class="section-eyebrow">
+        <span>Today's Verse</span>
+        <button id="refresh-verse" class="text-button" type="button" aria-label="Show another verse">Show another ↻</button>
+      </div>
+
+      <div class="verse-card" id="verse-card">
+        <div id="verse-loading" class="verse-state">Opening today's page…</div>
+
+        <div id="verse-content" class="verse-content" hidden>
+          <p class="verse-arabic" id="verse-arabic" lang="ar" dir="rtl"></p>
+          <div class="verse-divider" aria-hidden="true"><span></span></div>
+          <p class="verse-translation" id="verse-translation"></p>
+          <p class="verse-reference" id="verse-reference"></p>
+        </div>
+      </div>
+
+      <div class="verse-toolbar">
+        <div class="icon-button-group">
+          <button id="favorite-btn" class="icon-button" type="button" aria-pressed="false" aria-label="Save this verse to your favorites">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 17.3l-5.6 3 1.1-6.2L3 9.6l6.3-.9L12 3l2.7 5.7 6.3.9-4.5 4.5 1.1 6.2z"/></svg>
+            <span>Favorite</span>
+          </button>
+          <button id="copy-btn" class="icon-button" type="button" aria-label="Copy this verse">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4H5.5A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="text-size-group" role="group" aria-label="Arabic text size">
+          <button type="button" data-size="small" aria-label="Small Arabic text" aria-pressed="false">ا</button>
+          <button type="button" data-size="medium" aria-label="Medium Arabic text" aria-pressed="true">ا</button>
+          <button type="button" data-size="large" aria-label="Large Arabic text" aria-pressed="false">ا</button>
+        </div>
+      </div>
+      <p class="source-note" id="source-note"></p>
+
+      <details class="saved-verses-details">
+        <summary>Favorited verses</summary>
+        <div id="saved-verses-list" class="saved-verses-list">
+          <p class="journal-empty">Verses you favorite will appear here.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- Reflection -->
+    <section class="tab-panel reflection-section" id="panel-reflection" role="tabpanel" aria-labelledby="tab-reflection" tabindex="0" hidden>
+      <div class="section-rule" aria-hidden="true"></div>
+      <h2 id="reflection-heading" class="section-title">Reflection</h2>
+      <p id="streak-badge" class="streak-badge" hidden></p>
+
+      <div class="reflection-prompt-row">
+        <p id="reflection-prompt" class="reflection-prompt">Take a quiet moment with this verse before reading on.</p>
+        <button id="new-prompt" class="text-button" type="button">New prompt ↻</button>
+      </div>
+
+      <label for="reflection-text" class="field-label">Your reflection</label>
+      <textarea id="reflection-text" class="reflection-textarea" rows="5"
+        placeholder="What does this verse bring up for you today? Write a few lines — only you can see this."></textarea>
+
+      <div class="reflection-actions">
+        <span id="save-status" class="save-status" aria-live="polite"></span>
+        <button id="save-reflection" class="primary-button" type="button">Save reflection</button>
+      </div>
+
+      <details class="journal-details">
+        <summary>Past reflections</summary>
+        <div id="journal-list" class="journal-list">
+          <p class="journal-empty">Your saved reflections will appear here.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- Search -->
+    <section class="tab-panel search-section" id="panel-explore" role="tabpanel" aria-labelledby="tab-explore" tabindex="0" hidden>
+      <div class="section-rule" aria-hidden="true"></div>
+      <h2 id="search-heading" class="section-title">Explore the Qur'an</h2>
+      <p class="section-subtitle">Search by surah name (e.g. "Yasin"), a reference like 2:255, or an English keyword like "patience".</p>
+
+      <form id="search-form" class="search-form" role="search">
+        <input id="search-input" class="search-input" type="text" name="q"
+               placeholder="Search verses…" autocomplete="off" aria-label="Search the Qur'an">
+        <button class="primary-button" type="submit">Search</button>
+      </form>
+
+      <div id="search-results" class="search-results" aria-live="polite"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p id="footer-source">Verse text and translation are fetched live from the AlQuran Cloud API (Uthmani script &amp; Saheeh International translation, via the Tanzil Project). Please verify any verse against a trusted mushaf before quoting it formally.</p>
+  </footer>
+
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
